@@ -39,7 +39,7 @@ If it returns you your vzaar username, - we are good to go.
 var details = api.getUserDetails(VZAAR_USERNAME);
 ```
 
-Where _VZAAR_USERNAME_ is the vzaar username. Result of this call will be an object of [UserDetails](blob/master/com.vzaar.api/UserDetails.cs) type.
+Where _VZAAR_USERNAME_ is the vzaar username. Result of this call will be an object of [UserDetails](com.vzaar.api/UserDetails.cs) type.
 
 ####Account Details
 
@@ -51,7 +51,7 @@ var details = api.getAccountDetails(VZAAR_ACCOUNT_ID);
 
 Where _VZAAR_ACCOUNT_ID_ is the unique account id assigned by vzaar.
 
-Result of this call will 
+Result of this call will be an object of [AccountDetails](com.vzaar.api/AccountDetails.cs) type.
 
 ####Video List
 >This API call returns a list of the user's active videos along with it's relevant metadata. 20 videos are returned by default but this is customizable.
