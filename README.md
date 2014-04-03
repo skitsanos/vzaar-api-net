@@ -68,9 +68,14 @@ var list = api.getVideoList(query);
 
 ####Video Details
 
+>This API call returns metadata about selected video, like its dimensions, thumbnail information, author, duration, play count and so on.
+
 ```csharp
-api.getVideoDetails(1561281);
+api.getVideoDetails(VZAAR_VIDEO_ID);
 ```
+
+Where _VZAAR_VIDEO_ID_ is unique vzaar video ID assigned to a video after its processing.
+
 ####Upload Signature
 
 >In some cases you might need to not perform actual uploading from API but to use some third-party uploaders, like S3_Upload widget, or any other, so you would need to get only upload signature for it, so now you can have it as UploadSignature object, as XML string, as XmlDocument or as JSON string:
