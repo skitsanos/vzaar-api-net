@@ -84,7 +84,7 @@ Where _VZAAR_VIDEO_ID_ is unique vzaar video ID assigned to a video after its pr
 var jsonStringSignature = api.getUploadSignature().toJson();
 ```
 
-###Uploading video
+####Uploading video
 
 >Upload video from local drive directly to Amazon S3 bucket. Use this method when you build desktop apps or when you upload videos to vzaar directly from your server.
 
@@ -92,7 +92,7 @@ var jsonStringSignature = api.getUploadSignature().toJson();
 var guid = api.upload("PATH/TO/SOME_FILE");
 ```
 
-###Processing video
+####Processing video
 >This API call tells the vzaar system to process a newly uploaded video. This will encode it if necessary and then provide a vzaar video ID back.
 
 ```csharp
@@ -107,13 +107,17 @@ var procesQuery = new VideoProcessQuery
 var x = api.processVideo(editQuery);
 ```
 
-###Editing video
+####Editing video
 >This API call allows a user to edit or change details about a video in the system.
 
 ```csharp
 var editQuery = new VideoEditQuery
 {
-	title: "My awesome video"
+	title: "My REALLY awesome video",
+	description: "The story about how easy to build awesome apps with vzaar API",
+	markAsPrivate: true
 };
 var x = api.editVideo(editQuery);
 ```
+
+Notice _markAsPrivate_ property in _VideoEditQuery_ variable, you can pass there _true_ or _false_, and this property marks the video as private (if true) or public (if false).
