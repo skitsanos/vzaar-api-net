@@ -83,3 +83,37 @@ Where _VZAAR_VIDEO_ID_ is unique vzaar video ID assigned to a video after its pr
 ```csharp
 var jsonStringSignature = api.getUploadSignature().toJson();
 ```
+
+###Uploading video
+
+>Upload video from local drive directly to Amazon S3 bucket. Use this method when you build desktop apps or when you upload videos to vzaar directly from your server.
+
+```csharp
+var guid = api.upload("PATH/TO/SOME_FILE");
+```
+
+###Processing video
+>This API call tells the vzaar system to process a newly uploaded video. This will encode it if necessary and then provide a vzaar video ID back.
+
+```csharp
+var procesQuery = new VideoProcessQuery
+{
+	guid: "vzcf7af7bc5a734c30a46ca3911e7f3458",
+	title: "My awesome video",
+	description: "The story about how easy to build awesome apps with vzaar API",
+	profile: VideoProfile.ORIGINAL,
+	labels: new string[]{"api","tutorials"}
+};
+var x = api.processVideo(editQuery);
+```
+
+###Editing video
+>This API call allows a user to edit or change details about a video in the system.
+
+```csharp
+var editQuery = new VideoEditQuery
+{
+	title: "My awesome video"
+};
+var x = api.editVideo(editQuery);
+```
