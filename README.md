@@ -107,6 +107,21 @@ var procesQuery = new VideoProcessQuery
 var x = api.processVideo(editQuery);
 ```
 
+If you want to replace existing video with some newly uploaded, you can call _Process Video_ with adding _replaceId_ parameter equal to vzaar video ID of the video that needs to be replaced.
+
+```csharp
+var procesQuery = new VideoProcessQuery
+{
+	guid: "vzcf7af7bc5a734c30a46ca3911e7f3458",
+	replaceId: 12345678, //vzaar Video ID of the video you want to replace
+	title: "My awesome video",
+	description: "The story about how easy to build awesome apps with vzaar API",
+	profile: VideoProfile.ORIGINAL,
+	labels: new string[]{"api","tutorials"}
+};
+var x = api.processVideo(editQuery);
+```
+
 ####Editing video
 >This API call allows a user to edit or change details about a video in the system.
 
@@ -121,3 +136,10 @@ var x = api.editVideo(editQuery);
 ```
 
 Notice _markAsPrivate_ property in _VideoEditQuery_ variable, you can pass there _true_ or _false_, and this property marks the video as private (if true) or public (if false).
+
+####Deleting video
+>This API call allows you to delete a video from your account. If deletion was successful it will return you _true_ otherwise _false_.
+
+```csharp
+var result = api.deleteVideo(VZAAR_VIDEO_ID);
+```
