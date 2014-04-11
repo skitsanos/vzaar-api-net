@@ -484,12 +484,6 @@ namespace com.vzaar.api
                     throw new Exception( "HTTP Method " + method + " is not supported" );
             }
 
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-            }
             var response = request.GetResponse();
             Debug.WriteLine( ((HttpWebResponse)response).StatusDescription );
 
