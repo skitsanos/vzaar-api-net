@@ -54,6 +54,7 @@ Where _VZAAR_ACCOUNT_ID_ is the unique account id assigned by vzaar.
 Result of this call will be an object of [AccountDetails](com.vzaar.api/AccountDetails.cs) type.
 
 ####Video List
+
 >This API call returns a list of the user's active videos along with it's relevant metadata. 20 videos are returned by default but this is customizable.
 
 ```csharp
@@ -93,10 +94,11 @@ var guid = api.upload("PATH/TO/SOME_FILE");
 ```
 
 ####Processing video
+
 >This API call tells the vzaar system to process a newly uploaded video. This will encode it if necessary and then provide a vzaar video ID back.
 
 ```csharp
-var procesQuery = new VideoProcessQuery
+var processQuery = new VideoProcessQuery
 {
 	guid: "vzcf7af7bc5a734c30a46ca3911e7f3458",
 	title: "My awesome video",
@@ -104,13 +106,13 @@ var procesQuery = new VideoProcessQuery
 	profile: VideoProfile.ORIGINAL,
 	labels: new string[]{"api","tutorials"}
 };
-var x = api.processVideo(editQuery);
+var x = api.processVideo(processQuery);
 ```
 
 If you want to replace existing video with some newly uploaded, you can call _Process Video_ with adding _replaceId_ parameter equal to vzaar video ID of the video that needs to be replaced.
 
 ```csharp
-var procesQuery = new VideoProcessQuery
+var processQuery = new VideoProcessQuery
 {
 	guid: "vzcf7af7bc5a734c30a46ca3911e7f3458",
 	replaceId: 12345678, //vzaar Video ID of the video you want to replace
@@ -119,10 +121,11 @@ var procesQuery = new VideoProcessQuery
 	profile: VideoProfile.ORIGINAL,
 	labels: new string[]{"api","tutorials"}
 };
-var x = api.processVideo(editQuery);
+var x = api.processVideo(processQuery);
 ```
 
 ####Editing video
+
 >This API call allows a user to edit or change details about a video in the system.
 
 ```csharp
@@ -143,3 +146,5 @@ Notice _markAsPrivate_ property in _VideoEditQuery_ variable, you can pass there
 ```csharp
 var result = api.deleteVideo(VZAAR_VIDEO_ID);
 ```
+
+Where VZAAR_VIDEO_ID is unique vzaar video ID assigned to a video after its processing.
