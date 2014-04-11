@@ -270,7 +270,6 @@ namespace com.vzaar.api
             var response = executeRequest( url );
 
             var signature = new UploadSignature( response );
-            Debug.WriteLine( "=======  " + signature.signature + "===========" );
             return signature;
         }
 
@@ -379,7 +378,6 @@ namespace com.vzaar.api
                 var reader2 = new StreamReader( stream2 );
                 response = reader2.ReadToEnd();
 
-
             }
             catch (Exception ex)
             {
@@ -393,7 +391,7 @@ namespace com.vzaar.api
             return response;
         }
 
-        public void processVideo ( VideoProcessQuery query )
+        public Int64 processVideo ( VideoProcessQuery query )
         {
             var url = apiUrl + "/api/videos";
             var data = "<vzaar-api><video>";
@@ -407,6 +405,11 @@ namespace com.vzaar.api
 
             var response = executeRequest( url, "POST", data );
 
+            var doc = new XmlDocument();
+            doc.LoadXml( response );
+            var videoId = Int64.Parse( doc.SelectSingleNode( "//video" ).InnerText );
+            
+            return videoId;
         }
 
         public bool deleteVideo ( Int64 videoId )
@@ -425,7 +428,7 @@ namespace com.vzaar.api
             return videoStatus == (int)VideoStatus.DELETED;
         }
 
-        public void editVideo ( VideoEditQuery query )
+        public bool editVideo ( VideoEditQuery query )
         {
 
             var url = apiUrl + "/api/videos/" + query.id.ToString() + ".json";
@@ -438,7 +441,10 @@ namespace com.vzaar.api
             data += "</video></vzaar-api>";
 
             var response = executeRequest( url, "POST", data );
+            if (String.IsNullOrEmpty( response ))
+                return false;
 
+            return true;
         }
 
 
@@ -462,39 +468,49 @@ namespace com.vzaar.api
             {
                 case "GET":
                     break;
+
                 case "POST":
                     request.ContentType = "application/xml";
                     request.UserAgent = "Vzaar OAuth Client";
                     request.ContentLength = Encoding.UTF8.GetBytes( data ).Length;
+
                     var requestStream = request.GetRequestStream();
                     requestStream.Write( Encoding.UTF8.GetBytes( data ), 0, Encoding.UTF8.GetBytes( data ).Length );
                     requestStream.Close();
                     break;
+
                 case "DELETE":
                     request.ContentType = "application/xml";
                     request.UserAgent = "Vzaar OAuth Client";
                     request.KeepAlive = false;
                     request.ContentLength = Encoding.UTF8.GetBytes( data ).Length;
+
                     var rs = request.GetRequestStream();
                     rs.Write( Encoding.UTF8.GetBytes( data ), 0, Encoding.UTF8.GetBytes( data ).Length );
                     rs.Close();
-
                     break;
+
                 default:
                     throw new Exception( "HTTP Method " + method + " is not supported" );
             }
 
-            var response = request.GetResponse();
-            Debug.WriteLine( ((HttpWebResponse)response).StatusDescription );
+            WebResponse response = null;
+            var rawResponse = String.Empty;
 
-            var reader = new StreamReader( response.GetResponseStream() );
-            var rawResponse = reader.ReadToEnd();
-            if (((HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
-                throw new Exception( ((HttpWebResponse)response).StatusCode.ToString() );
+            try
+            {
+               response = request.GetResponse();
+               Debug.WriteLine( ((HttpWebResponse)response).StatusDescription );
+               var reader = new StreamReader( response.GetResponseStream() );
+               rawResponse = reader.ReadToEnd();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             return rawResponse;
         }
     }
-
-
 }
