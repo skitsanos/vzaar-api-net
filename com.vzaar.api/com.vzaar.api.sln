@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.vzaar.api", "com.vzaar.api.csproj", "{1B926284-96BF-491A-A451-8B203ABDAD22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VzaarAPI", "..\..\..\Projects - vzaar\api\.net\trunk\src\Vzaar_Library\VzaarAPI.csproj", "{4C22751C-707A-4245-98E4-53CCA6151D84}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vzaarTest", "..\vzaarTest\vzaarTest.csproj", "{930D04DB-9BA9-49CA-998D-A33CFC68EDCF}"
 EndProject
 Global
@@ -17,10 +15,6 @@ Global
 		{1B926284-96BF-491A-A451-8B203ABDAD22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B926284-96BF-491A-A451-8B203ABDAD22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B926284-96BF-491A-A451-8B203ABDAD22}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C22751C-707A-4245-98E4-53CCA6151D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C22751C-707A-4245-98E4-53CCA6151D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C22751C-707A-4245-98E4-53CCA6151D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C22751C-707A-4245-98E4-53CCA6151D84}.Release|Any CPU.Build.0 = Release|Any CPU
 		{930D04DB-9BA9-49CA-998D-A33CFC68EDCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{930D04DB-9BA9-49CA-998D-A33CFC68EDCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{930D04DB-9BA9-49CA-998D-A33CFC68EDCF}.Release|Any CPU.ActiveCfg = Release|Any CPU

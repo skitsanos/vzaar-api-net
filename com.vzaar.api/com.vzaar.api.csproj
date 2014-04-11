@@ -46,10 +46,13 @@
     <Compile Include="AccountDetails.cs" />
     <Compile Include="OAuth\OAuthBase.cs" />
     <Compile Include="OAuth\OAuthConsumer.cs" />
+    <Compile Include="UploadSignature.cs" />
     <Compile Include="UserDetails.cs" />
     <Compile Include="VideoDetails.cs" />
+    <Compile Include="VideoEditQuery.cs" />
     <Compile Include="VideoList.cs" />
     <Compile Include="VideoListQuery.cs" />
+    <Compile Include="VideoProcessQuery.cs" />
     <Compile Include="VideoProfile.cs" />
     <Compile Include="VideoStatus.cs" />
     <Compile Include="Vzaar.cs" />
