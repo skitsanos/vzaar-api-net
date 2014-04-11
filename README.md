@@ -1,6 +1,6 @@
 vzaar API .NET client
 ---
-Lighter and faster vzaar API client for .NET and Mono developers
+Lighter and faster vzaar API client for .NET and Mono developers. Documentation provided below is valid for the library version 2.0.5214 and above.
 
 ---
 
@@ -8,7 +8,7 @@ Lighter and faster vzaar API client for .NET and Mono developers
 
 ----
 
-###Examples
+###Using the library
 
 
 To start, make sure you have included com.vzaar.api.dll into your Project References.
