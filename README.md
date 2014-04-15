@@ -90,7 +90,13 @@ var jsonStringSignature = api.getUploadSignature().toJson();
 >Upload video from local drive directly to Amazon S3 bucket. Use this method when you build desktop apps or when you upload videos to vzaar directly from your server.
 
 ```csharp
-var guid = api.upload("PATH/TO/SOME_FILE");
+var guid = api.uploadVideo("PATH/TO/SOME_FILE");
+```
+
+Keep in mind that file uploaded to a Amazon S3 storage in chunks of 128Kb, you can adjust this chunk size this way:
+
+```csharp
+api.bufferSize = 262144; //256 kb
 ```
 
 ####Processing video
