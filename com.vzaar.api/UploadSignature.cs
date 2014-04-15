@@ -33,7 +33,7 @@ namespace com.vzaar.api
 			var jo = (JObject)JsonConvert.DeserializeObject(_toJson);
 			guid = (string)jo["guid"];
 			bucket = (string)jo["bucket"];
-			expirationDate = DateTime.Parse((string)jo["expirationdate"]);
+			expirationDate = DateTime.Parse((string)jo["expirationdate"].ToString());
             signature = (string)jo["signature"];
 			acl = (string)jo["acl"];
 			key = (string)jo["key"];

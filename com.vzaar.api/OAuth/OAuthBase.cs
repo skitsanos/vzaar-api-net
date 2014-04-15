@@ -172,7 +172,7 @@ namespace com.vzaar.api.OAuth
         /// </summary>
         /// <param name="value">The value to Url encode</param>
         /// <returns>Returns a Url encoded string</returns>
-        protected string UrlEncode(string value)
+        public string UrlEncode(string value)
         {
             var result = new StringBuilder();
 

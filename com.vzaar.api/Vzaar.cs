@@ -9,13 +9,19 @@ using System.Web;
 using System.Text;
 using System.Collections.Specialized;
 using System.Xml;
+using com.vzaar.api.OAuth;
 
 namespace com.vzaar.api
 {
     public class Vzaar
     {
+        public delegate void UploadProgressHandler ( object sender, UploadProgressEventArgs e );
+        public event UploadProgressHandler ProgressEvent = delegate { };
+
         public string username;
         public string token;
+
+        public long bufferSize = 131072; //128Kb
 
         public bool enableFlashSupport = false;
 
@@ -111,7 +117,7 @@ namespace com.vzaar.api
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public VideoDetails getVideoDetails ( int videoId )
+        public VideoDetails getVideoDetails ( Int64 videoId )
         {
             var url = apiUrl + "/api/videos/" + videoId + ".json";
 
@@ -207,8 +213,10 @@ namespace com.vzaar.api
                     status = (string)o["status"],
                     statusId = (int)o["status_id"],
                     duration = (decimal)o["duration"],
-                    height = (int)o["height"],
-                    width = (int)o["width"],
+                    description = (string)o["description"],
+                    height = string.IsNullOrEmpty( o["height"].ToString() ) ? 0 : int.Parse( o["height"].ToString() ),
+                    createdAt = DateTime.Parse( (string)o["created_at"].ToString() ),
+                    width = string.IsNullOrEmpty( o["width"].ToString() ) ? 0 : int.Parse( o["width"].ToString() ),
                     playCount = (Int64)o["play_count"],
                     version = (string)o["version"],
                     thumbnail = (string)o["thumbnail"],
@@ -250,20 +258,23 @@ namespace com.vzaar.api
         {
             var url = apiUrl + "/api/videos/signature";
 
+            var oAuth = new OAuthBase();
+            redirectUrl = oAuth.UrlEncode( redirectUrl );
+
             if (enableFlashSupport)
             {
-                apiUrl += "?=flash_request=true";
+                apiUrl += "?flash_request=true";
             }
 
             if (redirectUrl != String.Empty)
             {
                 if (!enableFlashSupport)
                 {
-                    url += "&success_action_redirect=" + redirectUrl;
+                    url += "?success_action_redirect=" + redirectUrl;
                 }
                 else
                 {
-                    url += "?success_action_redirect=" + redirectUrl;
+                    url += "&success_action_redirect=" + redirectUrl;
                 }
             }
 
@@ -275,7 +286,10 @@ namespace com.vzaar.api
 
         public string uploadVideo ( string path )
         {
-            var signature = getUploadSignature();
+            var signature = new UploadSignature();
+
+            signature = getUploadSignature();
+
             var url = "https://" + signature.bucket + ".s3.amazonaws.com/";
 
             var parameters = new NameValueCollection
@@ -289,10 +303,8 @@ namespace com.vzaar.api
                                  };
 
             var response = HttpUploadFile( url, path, "file", "application/octet-stream", parameters );
-            Debug.WriteLine( signature.guid );
 
             return signature.guid;
-
         }
 
         private string HttpUploadFile ( string url, string file, string paramName, string contentType, NameValueCollection nvc )
@@ -311,11 +323,10 @@ namespace com.vzaar.api
             wr.Headers.Add( "Accept-Encoding", "gzip,deflate" );
             wr.Headers.Add( "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7" );
             wr.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-            wr.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv: 1.9.1.1) Gecko/20090715 Firefox/3.5.1 (.NET CLR 3.5.30729)";
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
             wr.AllowWriteStreamBuffering = false;
             wr.SendChunked = false;
-            wr.Timeout = 1000000000;
+            //wr.Timeout = 1000000000;
             //request.ContentType = contentType;
 
             const string headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
@@ -350,20 +361,27 @@ namespace com.vzaar.api
             }
             rs.Write( boundarybytes, 0, boundarybytes.Length );
 
-
             rs.Write( headerbytes, 0, headerbytes.Length );
 
-
-            var buffer = new byte[4096];
+            var buffer = new byte[bufferSize];
             int bytesRead;
+            var bytesUploaded = 0;
             while ((bytesRead = fileStream.Read( buffer, 0, buffer.Length )) != 0)
             {
                 rs.Write( buffer, 0, bytesRead );
 
-                // ProgressEvent( null, new EventArgs() );
+                //raise event with upload progress
+                bytesUploaded += bytesRead;
+                var eventArgs = new UploadProgressEventArgs
+                {
+                    bytesUploaded = bytesUploaded,
+                    bytesTotal = fileStream.Length
+                };
+
+                ProgressEvent( this, eventArgs );
+
             }
             fileStream.Close();
-
 
             rs.Write( trailer, 0, trailer.Length );
             rs.Close();
@@ -408,7 +426,7 @@ namespace com.vzaar.api
             var doc = new XmlDocument();
             doc.LoadXml( response );
             var videoId = Int64.Parse( doc.SelectSingleNode( "//video" ).InnerText );
-            
+
             return videoId;
         }
 
@@ -447,7 +465,6 @@ namespace com.vzaar.api
             return true;
         }
 
-
         private string executeRequest ( string url )
         {
             return executeRequest( url, "GET", null );
@@ -471,7 +488,6 @@ namespace com.vzaar.api
 
                 case "POST":
                     request.ContentType = "application/xml";
-                    request.UserAgent = "Vzaar OAuth Client";
                     request.ContentLength = Encoding.UTF8.GetBytes( data ).Length;
 
                     var requestStream = request.GetRequestStream();
@@ -481,7 +497,6 @@ namespace com.vzaar.api
 
                 case "DELETE":
                     request.ContentType = "application/xml";
-                    request.UserAgent = "Vzaar OAuth Client";
                     request.KeepAlive = false;
                     request.ContentLength = Encoding.UTF8.GetBytes( data ).Length;
 
@@ -499,15 +514,16 @@ namespace com.vzaar.api
 
             try
             {
-               response = request.GetResponse();
-               Debug.WriteLine( ((HttpWebResponse)response).StatusDescription );
-               var reader = new StreamReader( response.GetResponseStream() );
-               rawResponse = reader.ReadToEnd();
+                response = request.GetResponse();
+                Debug.WriteLine( ((HttpWebResponse)response).StatusDescription );
+                var reader = new StreamReader( response.GetResponseStream() );
+                rawResponse = reader.ReadToEnd();
 
             }
             catch (Exception ex)
             {
-                throw ex;
+                Debug.WriteLine( ex.ToString() );
+                throw;
             }
 
             return rawResponse;
