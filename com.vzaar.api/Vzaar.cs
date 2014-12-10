@@ -455,7 +455,7 @@ namespace com.vzaar.api
             if (query.replaceId != "")
                 data += "<replace_id>" + query.replaceId + "</replace_id>";
             data += "<guid>" + query.guid + "</guid><title>" + query.title + "</title><description>" + query.description + "</description><labels>";
-            data += String.Join( ",", query.labels ) + "</labels><profile>" + query.profile + "</profile>";
+            data += String.Join( ",", query.labels ) + "</labels><profile>" + (int)query.profile + "</profile>";
             if (query.transcode)
                 data += "<transcoding>true</transcoding>";
             data += "</video> </vzaar-api>";
