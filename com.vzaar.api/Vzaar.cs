@@ -283,7 +283,7 @@ namespace com.vzaar.api
 
             if (enableFlashSupport)
             {
-                apiUrl += "?=flash_request=true";
+                url += "?flash_request=true";
             }
 
             var response = executeRequest( url );
@@ -302,7 +302,7 @@ namespace com.vzaar.api
 
             if (enableFlashSupport)
             {
-                apiUrl += "?flash_request=true";
+                url += "?flash_request=true";
             }
 
             if (redirectUrl != String.Empty)
